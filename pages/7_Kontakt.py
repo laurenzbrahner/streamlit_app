@@ -1,12 +1,22 @@
 import streamlit as st
 
 
-st.set_page_config(page_title="Konatakt", page_icon="🌍")
+st.set_page_config(page_title="Konatakt", page_icon=":telephone_receiver:")
 
-st.markdown("# Mapping Demo")
-st.sidebar.header("Mapping Demo")
+st.title(" Kontakt")
+
 st.write(
-    """This demo shows how to use
-[`st.pydeck_chart`](https://docs.streamlit.io/library/api-reference/charts/st.pydeck_chart)
-to display geospatial data."""
+    """
+        **Name des Autors:**
+        - Laurenz Brahner
+
+        **Kontaktinformationen:**
+        - [GitHub](https://github.com/laurenzbrahner)
+        - lb184@hdm-stuttgart.de    
+
+    """
 )
+
+
+st.markdown("---")
+st.write("© 2023 Laurenz Brahner - Alle Rechte vorbehalten.")
