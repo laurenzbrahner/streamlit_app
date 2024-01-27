@@ -7,10 +7,10 @@ import json
 
 
 st.set_page_config(page_title="Herkunft der Top Künstler",
-                   page_icon="📈", layout="wide")
+                   page_icon=":earth_americas:", layout="wide")
 
 
-file_path = r'C:\Users\Privat\OneDrive\Dokumente\GitHub\DST-Documentation\data_exploration\spotify_angereichert_cleaned.csv'
+file_path = './spotify_angereichert_cleaned.csv'
 df = pd.read_csv(file_path)
 
 df.drop(['Unnamed: 0'], axis=1, inplace=True)
@@ -116,8 +116,8 @@ def map(countries):
     ).encode(
         color=alt.condition(
             'datum.properties.artist_count > 0',  # Bedingung
-            alt.Color('properties.artist_count:Q', scale=alt.Scale(scheme='blues', domain=[
-                0, 95]), legend=alt.Legend(title='Anzahl der Künstler')),  # Farbe bei erfüllter Bedingung
+            alt.Color('properties.artist_count:Q', scale=alt.Scale(type="log", domain=[
+                1, 368], scheme='blues',), legend=None),
             # Alternative Farbe, wenn Bedingung nicht erfüllt ist
             alt.value('lightgray')
         ),
@@ -158,7 +158,11 @@ def map(countries):
         height=500
     )
 
-    final_chart = base + points
+    final_chart = alt.layer(base, points).configure_title(
+        color='#60b4ff',
+        fontSize=25,
+        anchor='start'
+    )
 
     return final_chart
 
@@ -169,15 +173,78 @@ unique_countries = df['artist_country'].unique()
 st.sidebar.title(
     "Wähle Länder aus")
 selected_countries = st.sidebar.multiselect(
-    "Alle Länder sind Standartmäßig ausgewählt", unique_countries)
+    "Alle Länder sind standardmäßig ausgewählt", unique_countries)
 
 
-st.title("Aus welchem Land du Kommen solltest?")
+st.title("Aus welchem Land der Künstler kommen sollte")
+
+st.write("""Die :blue[Weltkarte] zeigt die Anzahl der Künstler pro Land an. Sie können die Länder auswählen, die Sie interessieren.
+          Wenn Sie mit der Maus über ein Land fahren, sehen Sie die Anzahl der Top-Künstler im Land.""")
+
+st.write(
+    """Wenn Sie in der Sidebar Länder auswählen, wird ein :orange[Barplot] mit den Top 10 Ländern der Top-Künstler angezeigt und die :blue[Weltkarte] wird aktualisiert, um nur die ausgewählten Länder anzuzeigen.""")
 
 if len(selected_countries) > 0:
     st.altair_chart(map(selected_countries), use_container_width=True)
+
 else:
     st.altair_chart(map([]), use_container_width=True)
 
+if len(selected_countries) >= 1 and len(selected_countries) <= 10:
+    st.write("Barchart mit den Top Künstlern aus den ausgewählten Ländern")
+
+    artist_country_count = df.groupby('artist_country')[
+        'artist(s)_name'].count().sort_values(ascending=False)
+
+    # filer nach den ausgewählten Ländern
+    artist_country_count = artist_country_count[artist_country_count.index.isin(
+        selected_countries)]
+
+    top_artist_country_count_chart = alt.Chart(artist_country_count.reset_index()).mark_bar(size=60).encode(
+        x=alt.X('artist_country', sort='-y',
+                axis=alt.Axis(title='Land', labelAngle=-45)),
+        y=alt.Y('artist(s)_name', axis=alt.Axis(
+            title='Anzahl der Künstler')),
+        color=alt.Color('artist(s)_name',  scale=alt.Scale(
+            domain=[1, 400], type="log", scheme='blues'), legend=None),
+        tooltip=['artist_country', 'artist(s)_name']
+    ).properties(
+        title={'text': 'Top 10 Herkunftsländer der Top-Künstler', 'dy': 0},
+        width=800,
+        height=500
+    ).configure_title(
+        fontSize=25,
+        anchor='start',
+        color='#ffbd45'
+    ).configure_axis(
+        labelFontSize=14,
+        titleFontSize=20,
+        titleColor='gray',
+        labelColor='gray',
+        titlePadding=12,
+        grid=False
+    ).configure_legend(
+        titleFontSize=16,
+        labelFontSize=14
+    ).configure_view(
+        strokeWidth=0,
+    ).configure_axisX(
+        labelAngle=0,
+        titleAnchor='start'
+    ).configure_axisY(
+        grid=False,
+        titleAnchor='end',
+        titleFontSize=20
+    )
+    st.altair_chart(top_artist_country_count_chart, use_container_width=True)
+
+elif len(selected_countries) > 10:
+    st.error(
+        "Zu viele Länder ausgewählt, bitte wähle maximal 10 Länder aus um den Barplot anzuzeigen")
+
 
 # Streamlit-Elemente
+
+
+st.markdown("---")
+st.write("© 2023 Laurenz Brahner - Alle Rechte vorbehalten.")

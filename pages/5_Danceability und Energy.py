@@ -9,7 +9,7 @@ st.set_page_config(page_title="Einlfuss der Speechiness",
                    page_icon="📈")
 
 
-file_path = r'C:\Users\Privat\OneDrive\Dokumente\GitHub\DST-Documentation\data_exploration\spotify_angereichert_cleaned.csv'
+file_path = './spotify_angereichert_cleaned.csv'
 df = pd.read_csv(file_path)
 
 df.drop(['Unnamed: 0'], axis=1, inplace=True)
@@ -22,11 +22,11 @@ def show_distribution_plot(df, merkmal):
     if merkmal == "energy_%":
         column_name = "energy_range"
         title = "Energy"
-        color = 'blue'
+        color = '#60b4ff'
     if merkmal == "danceability_%":
         column_name = "danceability_range"
         title = "Danceability"
-        color = 'orange'
+        color = '#ffbd45'
 
     # calcaulate the mean of the song counts per energy range
     energy_grouped = df.groupby(pd.cut(df[merkmal], range(
@@ -57,7 +57,7 @@ def show_distribution_plot(df, merkmal):
 
     x = alt.layer(energy_grouped_chart, energy_grouped_line_chart).properties(
         title={'text': 'Durchschnittliche Anzahl der Songs nach {}'.format(
-            title), 'dy': -20},
+            title), 'dy': 0},
         width=600,
         height=400
     ).configure_title(
@@ -97,9 +97,9 @@ diagram = st.sidebar.radio(
 
 st.title("Wie tanzbar und wie energetisch ein Song sein sollte")
 st.write("""
-         :blue[Energy] spiegelt die Intensität und Aktivität eines Songs wider, während :orange[Danceability] beschreibt, wie geeignet ein Song zum Tanzen ist. 
+         :blue[Energy] spiegelt die Intensität und Aktivität eines Songs wieder, während :orange[Danceability] beschreibt, wie geeignet ein Song zum Tanzen ist. 
         
-         Durch die Auswahl der Optionen in der Seitenleiste können Sie filtern welches Merkmal sie genauer betrachten möchten.
+         Durch die Auswahl der Optionen in der Seitenleiste können Sie filtern, welches Merkmal Sie genauer betrachten möchten.
 """)
 
 
@@ -120,3 +120,7 @@ if diagram == "Danceability":
         :point_right:
         :orange[Die meisten Songs haben einen Danceability-Wert von 70-80%] 
         """)
+
+
+st.markdown("---")
+st.write("© 2023 Laurenz Brahner - Alle Rechte vorbehalten.")

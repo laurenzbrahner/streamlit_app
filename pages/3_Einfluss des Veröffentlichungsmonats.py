@@ -9,7 +9,7 @@ st.set_page_config(page_title="Einlfuss der Tonart",
 
 
 # Line Chart
-file_path = r'C:\Users\Privat\OneDrive\Dokumente\GitHub\DST-Documentation\data_exploration\spotify_angereichert_cleaned.csv'
+file_path = './spotify_angereichert_cleaned.csv'
 df = pd.read_csv(file_path)
 
 df.drop(['Unnamed: 0'], axis=1, inplace=True)
@@ -78,7 +78,7 @@ def monthly_rel_chart(df):
 
 st.title("Einfluss der Veröffentlichungsmonate")
 st.write("""
-Hier stellen Wir uns die Frage wann es am besten ist einen Song zu veröffentlichen. Dazu schauen wir uns die Anzahl der Veröffentlichungen der beliebtesten Songs nach Monat an.
+Hier stellen wir uns die Frage, wann es am besten ist, einen Song zu veröffentlichen. Dazu schauen wir uns die Anzahl der Veröffentlichungen der beliebtesten Songs nach Veröffentlichungsmonat an.
 """)
 
 
@@ -197,3 +197,14 @@ if st.session_state['show_details']:
     )
 
     chart_placeholder.altair_chart(final_chart, use_container_width=True)
+
+    st.write("""
+        :point_right:
+        :green[Die meisten Top-Songs werden im Januar und im Mai released.]     
+""")
+    st.write(""":point_right: 
+        :red[Die wenigsten Top-Songs werden im August released.] 
+     """)
+
+st.markdown("---")
+st.write("© 2023 Laurenz Brahner - Alle Rechte vorbehalten.")

@@ -9,7 +9,7 @@ st.set_page_config(page_title="Einlfuss der Speechiness",
                    page_icon="📈", layout='wide')
 
 
-file_path = r'C:\Users\Privat\OneDrive\Dokumente\GitHub\DST-Documentation\data_exploration\spotify_angereichert_cleaned.csv'
+file_path = './spotify_angereichert_cleaned.csv'
 df = pd.read_csv(file_path)
 
 df.drop(['Unnamed: 0'], axis=1, inplace=True)
@@ -196,7 +196,7 @@ st.title('Analyse des Einflusses von Audio-Merkmalen auf die Songpopularität')
 st.write("""
 Diese Visualisierung bietet einen tiefgreifenden Einblick in den Einfluss verschiedener Audio-Merkmale wie :blue[Speechiness],
           :orange[Liveness], :green[Instrumentalness] und :gray[Acousticness] auf die Popularität von Songs, gemessen an Streams und Songanzahl. 
-         Nutzer können zwischen verschiedenen Darstellungen wählen, einschließlich Streudiagrammen und Regressionslinien,
+         Sie können zwischen verschiedenen Darstellungen wählen, einschließlich Streudiagrammen und Regressionslinien,
           um die Beziehungen zwischen den Audio-Merkmalen und der Popularität der Songs zu verstehen.
 """)
 
@@ -400,3 +400,6 @@ elif remove_regression == 'Scatter Points':
 #        elif y_axis_user_option == 'Anzahl der Songs':
 #            st.altair_chart(mrkmal_streams_chart_with_song_amount(
 #                'energy_%', remove_regression))
+
+
+st.write("© 2023 Laurenz Brahner - Alle Rechte vorbehalten.")

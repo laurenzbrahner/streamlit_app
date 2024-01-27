@@ -7,7 +7,7 @@ import sys
 st.set_page_config(page_title="Inhalt", page_icon="📈", layout='wide')
 
 
-file_path = r'C:\Users\Privat\OneDrive\Dokumente\GitHub\DST-Documentation\data_exploration\spotify_angereichert_cleaned.csv'
+file_path = './spotify_angereichert_cleaned.csv'
 df = pd.read_csv(file_path)
 
 
@@ -36,7 +36,7 @@ top_artists_streams = df_top_artist.head(10)
 
 # bar_chart top songs
 
-top_artists_streams_chart = alt.Chart(df_top10_songs.reset_index()).mark_bar().encode(
+top_songs_streams_chart = alt.Chart(df_top10_songs.reset_index()).mark_bar().encode(
     y=alt.Y('track_name', sort='-x',
             axis=alt.Axis(title='Songtitel', labelFontSize=12)),
     x=alt.X('streams', axis=alt.Axis(title='Streams (Milliarden)', titleFontSize=20,
@@ -77,29 +77,43 @@ top_artists_streams_chart = alt.Chart(df_top10_songs.reset_index()).mark_bar().e
 # pie Chart To Artists
 
 
-artist_streams_pie_chart = alt.Chart(top_artists_streams.reset_index()).mark_arc().encode(
-    theta=alt.Theta(field='streams', type='quantitative'),
-    color=alt.Color(field='artist(s)_name', type='nominal',
-                    legend=alt.Legend(title='Künstler')),
-    order=alt.Order('streams', sort='ascending'),
+top_artists_streams_chart = alt.Chart(top_artists_streams.reset_index()).mark_bar().encode(
+    y=alt.Y('artist(s)_name', sort='-x',
+            axis=alt.Axis(title='Künstler')),
+    x=alt.X('streams', axis=alt.Axis(title='Streams (Milliarden)', format='.0s',
+            tickCount=5, tickMinStep=1e9, labelExpr='datum.value / 1e9')),
+    color=alt.Color('streams', scale=alt.Scale(scheme='viridis'), legend=None),
     tooltip=[
         alt.Tooltip('artist(s)_name', title='Künstlername'),
         alt.Tooltip('streams', title='Anzahl der Streams')
     ]
 ).properties(
-    title={'text': 'Top Künstler nach Streams', 'dy': -0},
+    title={'text': 'Top 10 Künstler nach Streams', 'dy': 0},
     width=600,
-    height=300
+    height=400
 ).configure_title(
+    color='#60b4ff',
     fontSize=25,
-    anchor='start',
-    color='#60b4ff'
+    anchor='start'
+).configure_axis(
+    labelFontSize=14,
+    titleFontSize=20,
+    titleColor='gray',
+    labelColor='gray',
+    titlePadding=12,
+    grid=False
 ).configure_legend(
     titleFontSize=16,
-    labelFontSize=12,
-    padding=0
+    labelFontSize=14
 ).configure_view(
-    strokeWidth=0
+    strokeWidth=0,
+).configure_axisX(
+    labelAngle=0,
+    titleAnchor='start'
+).configure_axisY(
+    grid=False,
+    titleAnchor='middle',
+    titleFontSize=20
 )
 
 
@@ -109,9 +123,8 @@ artist_streams_pie_chart = alt.Chart(top_artists_streams.reset_index()).mark_arc
 st.title("Spotify Top-Songs und Künstler 2023")
 
 st.write("""
-Bevor wir tiefer in die Daten eindrigen, wollen wir uns erstmal einen Überblick verschaffen. :orange[**Welche Songs wurden am meisten gestreamt?**] und :blue[**Wer waren die Top-Künstler im Jahr 2023?**] 
-    Die Grafiken unten zeigen einmal die Top 10 songs basierend auf der Gesamtzahl ihrer Spotify-Streams 
-    und einmal die Top 10 Künstler basierend auf der Gesamtzahl ihrer Spotify-Streams.
+Bevor wir tiefer in die Daten eindringen, wollen wir uns erstmal einen Überblick verschaffen. :orange[**Welche Songs wurden am meisten gestreamt?**] und :blue[**Wer waren die Top-Künstler im Jahr 2023?**] 
+   Die Grafiken unten zeigen einmal die Top 10-Songs und die Top 10-Künstler, basierend auf der Anzahl ihrer Spotify-Streams.
 """)
 
 st.markdown("---")
@@ -120,10 +133,10 @@ st.markdown("---")
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.altair_chart(top_artists_streams_chart, use_container_width=True)
+    st.altair_chart(top_songs_streams_chart, use_container_width=True)
 
 with col2:
-    st.altair_chart(artist_streams_pie_chart, use_container_width=True)
+    st.altair_chart(top_artists_streams_chart, use_container_width=True)
 
 
 def aufteilen_streams(df, artist_column='artist(s)_name', streams_column='streams'):

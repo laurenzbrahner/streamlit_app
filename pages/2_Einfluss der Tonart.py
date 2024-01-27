@@ -6,7 +6,7 @@ import altair as alt
 st.set_page_config(page_title="Einlfuss der Tonart",
                    page_icon="📈", layout='wide')
 
-file_path = r'C:\Users\Privat\OneDrive\Dokumente\GitHub\DST-Documentation\data_exploration\spotify_angereichert_cleaned.csv'
+file_path = './spotify_angereichert_cleaned.csv'
 df = pd.read_csv(file_path)
 
 df.drop(['Unnamed: 0'], axis=1, inplace=True)
@@ -27,8 +27,8 @@ def mode_streams_chart(df, key):
         key = "Key: {}".format(inhalt)
     chart_mode_bar = alt.Chart(df).mark_bar(clip=True, size=50).encode(
         x=alt.X('mode', axis=alt.Axis(title='Tonart', labelFontSize=14)),
-        y=alt.Y('streams', scale=alt.Scale(domain=[250000000, 600000000]), axis=alt.Axis(title='Streams (Millionen) Ø ', titleFontSize=20,
-                                                                                         labelFontSize=14, format='.0s', tickCount=5, tickMinStep=1e9, labelExpr='datum.value / 1e6')),
+        y=alt.Y('streams', scale=alt.Scale(domain=[250000000, 650000000]), axis=alt.Axis(title='Streams (Millionen) Ø ', titleFontSize=20,
+                                                                                         labelFontSize=14, format='.0s', tickCount=6, tickMinStep=1e9, labelExpr='datum.value / 1e6')),
         color=alt.Color('mode', legend=None, scale=alt.Scale(
             range=['#4ee2e6', 'white'])),
 
@@ -83,7 +83,7 @@ def key_chart(df, title):
     key_streams_chart = alt.Chart(df).mark_bar(clip=True, size=20).encode(
         x=alt.X('key',  axis=alt.Axis(title='Key', labelFontSize=14)),
         y=alt.Y('streams', scale=alt.Scale(domain=[250000000, 650000000]), axis=alt.Axis(title='Streams (Millionen) Ø ', titleFontSize=20,
-                labelFontSize=14, format='.0s', tickCount=5, tickMinStep=1e9, labelExpr='datum.value / 1e6')),
+                labelFontSize=14, format='.0s', tickCount=6, tickMinStep=1e9, labelExpr='datum.value / 1e6')),
         color=alt.Color('key', legend=None,),
         tooltip=['key', 'streams']
     ).properties(
@@ -125,7 +125,7 @@ st.title(
 st.write("""
 Diese Seite bietet einen Einblick in die Streaming-Dynamik von Dur (Major) und Moll (Minor) :orange[***Tonarten***],
           die als Schlüsselindikatoren für die Präferenzen von Hörern gelten. Während Dur ("Major") für seine helle und fröhliche Klangfarbe bekannt ist, bietet Moll ("Minor") eine tiefere, oft melancholischere Stimmung.
-          Des weiteren werden die Tonstufen oder auch :blue[***keys***] auf ihre beliebtheit untersucht.
+          Des weiteren werden die Tonstufen oder auch :blue[***keys***] auf ihre Beliebtheit untersucht.
 """)
 
 # Sidebar
